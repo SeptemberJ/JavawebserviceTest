@@ -1,0 +1,619 @@
+package org.spring.springboot.controller;
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;  
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.swing.ImageIcon;
+
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.spring.springboot.service.impl.PartyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import sun.misc.BASE64Decoder;
+
+import java.awt.*;   
+import java.awt.image.*;   
+import java.io.*;
+import java.net.URL;   
+
+
+@Controller
+@RequestMapping("/")
+public class PartyCtrl{
+
+	@Autowired
+	private PartyService partyService;
+	@Autowired
+	Map<String, Object> map = new HashMap<String, Object>();
+	SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");	
+	SimpleDateFormat Order = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");	
+    Calendar c = Calendar.getInstance();
+	
+
+    
+    /**党组织转接*/
+    @ResponseBody
+	@RequestMapping(value = "/updateparty.do",method= RequestMethod.POST)
+    //@ApiImplicitParam(paramType="query", name = "fname", value = "fname", dataType = "String")
+   
+	public Object updateparty(@RequestBody String putInStorage, String fname,String fscard,String gzdw,String zrdzb,String zcwhy) {
+    	Integer type = 0;
+    	String partybranch = null;
+    	String changeparty = null;
+    	String yparty = null;
+    	
+    	JSONObject json = JSONObject.fromObject(putInStorage);
+    	JSONObject json1=json.getJSONObject("Info");
+    	System.out.println(json1);
+    	fname = json1.get("name").toString(); 
+    	fscard = json1.get("id_card").toString(); 
+    	gzdw = json1.get("work").toString(); 
+    	zrdzb = json1.get("transferMaster").toString(); 
+    	zcwhy = json1.get("transferReason").toString(); 
+    	
+    	
+    	map.put("fname", fname);
+    	map.put("fscard", fscard);
+    	map.put("unit", gzdw);
+    	map.put("changeparty", zrdzb);
+    	map.put("zcwhy", zcwhy);
+    	 partyService.updateparty(map);
+    	
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> partylist =  partyService.selectparty(map);
+    	for(int i = 0;i < partylist.size();i++){
+    		partybranch = partylist.get(i).get("partybranch").toString();
+    		changeparty = partylist.get(i).get("changeparty").toString();
+    	
+    	}
+    	System.out.println("---------------");
+    	map.put("yparty", partybranch);
+    	map.put("partybranch", changeparty);
+    	map.put("fscard", fscard);
+    	type = partyService.updateparty1(map);
+    	System.out.println(type+"------");
+    	return type;
+    }
+    
+    
+    
+    /**入党申请
+     * @throws ParseException */
+    @ResponseBody
+	@RequestMapping(value = "/applyparty.do",method= RequestMethod.POST)        //
+   // @ApiImplicitParam(paramType="query", name = "putInStorage", value = "putInStorage", required=false, dataType = "String")
+	public Object applyparty(@RequestBody String putInStorage) throws ParseException {
+    	Integer type = 0;
+    	String fname = null;
+    	String unit = null;
+    	String feedback = null;
+    	String flow = null;
+    	String subreports = null;
+    	String subreports1 = null;
+    	String fsex = null;
+    	String fmz = null;
+    	String fscard = null;
+    	String fmobile = null;
+    	String zw = null;
+    	String fjg = null;
+    	String csdate = null;
+    	String xl = null;
+    	Date cjgzdate = null;
+    	String cjgzdate1 = null;
+    	String fxx = null;
+    	String faddress = null;
+    	String id = null;
+    	String rxdate = null;
+    	String bydate = null;
+    	String introducer1 = null;
+    	String introducer2 = null;
+    	String rdjsr = null;
+    	String sxhb = null;   //思想汇报
+    	String partybranch = null;   //党组织
+    
+    	JSONObject json = JSONObject.fromObject(putInStorage);
+    	JSONObject json1=json.getJSONObject("Info");
+    	System.out.println(json1);
+    	faddress = json1.get("address").toString(); 
+    	
+    	partybranch = json1.get("partybranch").toString(); 
+  
+    	xl = json1.get("education").toString(); 
+    	fscard = json1.get("id_card").toString(); 
+    	fname = json1.get("name").toString(); 
+    	fmz = json1.get("nation").toString(); 
+    	fsex = json1.get("sex").toString(); 
+    	fjg = json1.get("origin").toString(); 
+    	cjgzdate1 = json1.get("workTime").toString();
+<<<<<<< .mine
+    	//cjgzdate1 = "2016-08-15T16:00:00.000Z";
+=======
+>>>>>>> .r4
+    	cjgzdate1 = cjgzdate1.replace("Z", " UTC");
+    	System.out.println(cjgzdate1);
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+    	Date d = format.parse(cjgzdate1);
+    	System.out.println(d);
+    	
+    	String c =  Order.format(d);
+    	System.out.println(c);
+    	fxx = json1.get("school").toString(); 
+    	rxdate = json1.get("entryTime").toString(); 
+    	
+<<<<<<< .mine
+    	//rxdate = "2016-08-15T16:00:00.000Z";
+=======
+>>>>>>> .r4
+    	rxdate = rxdate.replace("Z", " UTC");
+    	System.out.println(rxdate);
+    	SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+    	Date rxdate2 = format2.parse(rxdate);
+    	System.out.println(rxdate2);
+    	
+    	String c2 =  Order.format(rxdate2);
+    	System.out.println(c2);
+    	
+    	bydate = json1.get("graduationTime").toString(); 
+<<<<<<< .mine
+    	//bydate = "2016-08-15T16:00:00.000Z";
+=======
+>>>>>>> .r4
+    	bydate = bydate.replace("Z", " UTC");
+    	System.out.println(bydate);
+    	SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+    	Date bydate1 = format1.parse(bydate);
+    	System.out.println(bydate1);
+    	
+    	String c1 =  Order.format(bydate1);
+    	System.out.println(c1);
+    	introducer1 = json1.get("introducer1").toString(); 
+    	introducer2 = json1.get("introducer2").toString(); 
+    	
+    	rdjsr = introducer1 +"," + introducer2;
+    
+    	map.put("fname", fname);
+    	map.put("fcheck", 0);
+    	map.put("fstatus", 0);
+    	map.put("fsex", fsex);
+    	map.put("fmz",fmz );
+    	map.put("fscard",fscard );
+    	map.put("xl", xl);
+    	map.put("faddress", faddress);
+    	map.put("fxx", fxx);
+    	map.put("fjg", fjg);
+    	map.put("cjgzdate", c);
+    	map.put("rxdate", c2);
+    	map.put("bydate", c1);
+    	map.put("rdjsr", rdjsr);
+    	map.put("partybranch", partybranch);
+    	type= partyService.insertapply(map);
+    	
+      	
+    	return type;
+    }
+    
+    
+    
+    /**更新党员信息*/
+    @ResponseBody
+	@RequestMapping(value = "/updatesubreports1.do",method= RequestMethod.GET)
+	public Object updatesubreports1(String subreports1,String fscard) {
+    	
+    	
+    	map.put("subreports1", subreports1);
+    	map.put("fscard", fscard);
+    	int type = partyService.updatesubreports1(map);
+    	return type;
+    }
+    
+    
+    /**查看19大思维导图*/
+    @ResponseBody
+	@RequestMapping(value = "/selectdt.do",method= RequestMethod.GET)
+	public Object selectdt() {
+    	
+    	String fname = null;
+    	String psdate = null;
+    	List<Map<String,Object>> vidolist =  partyService.selectdt();
+    	
+    	return vidolist;
+    }
+    
+    
+    /**查看视频标题*/
+    @ResponseBody
+	@RequestMapping(value = "/selectvideotitle.do",method= RequestMethod.GET)
+	public Object selectvideotitle() {
+    	
+    	String fname = null;
+    	String psdate = null;
+    	List<Map<String,Object>> vidolist =  partyService.selectvideo();
+    	for(int i = 0;i <vidolist.size();i++){
+    		fname = vidolist.get(i).get("fname").toString();
+    		psdate = vidolist.get(i).get("psdate").toString();
+    	}
+    	return vidolist;
+    }
+    
+    
+    /**查看视频详情*/
+    @ResponseBody
+	@RequestMapping(value = "/selectvideonr.do",method= RequestMethod.GET)
+    @ApiImplicitParam(paramType="query", name = "id", value = "id", required = true, dataType = "String")
+	public Object selectvideonr(String id) {
+    	
+    	String fname = null;
+    	String psdate = null;
+    	String vidoe1 = null;
+    	map.put("id", id);
+    	List<Map<String,Object>> vidolist =  partyService.selectvideo1(map);
+    	for(int i = 0;i <vidolist.size();i++){
+    		fname = vidolist.get(i).get("fname").toString();
+    		psdate = vidolist.get(i).get("psdate").toString();
+    		psdate = vidolist.get(i).get("psdate").toString();
+<<<<<<< .mine
+    		vidoe1 = vidolist.get(i).get("video1").toString();
+    		if(vidoe1.substring(vidoe1.length()-1, vidoe1.length()).equals(",")){
+    			vidoe1 = "https://zgeqscjdglj.org/upload/"+(vidoe1.length()-1);
+    		}else{
+    			vidoe1 = "https://zgeqscjdglj.org/upload/"+vidoe1;
+    		}
+=======
+    		vidoe1 = vidolist.get(i).get("fimage").toString();
+    		System.out.println(vidoe1);
+    		String b = vidoe1.substring(0, vidoe1.length()-1);
+    		String a = vidoe1.substring(vidoe1.length()-1, vidoe1.length());
+    		System.out.println(a+"-----");
+    		if(a.equals(",")){
+    			vidoe1 = "https://zgeqscjdglj.org/upload/"+b;
+    		}else{
+    		    vidoe1 = "https://zgeqscjdglj.org/upload/"+vidoe1;
+    		}
+>>>>>>> .r4
+    		
+    		vidolist.get(i).put("video1", vidoe1);
+    	}
+    	return vidolist;
+    }
+    
+    /**上传视频*/
+    @ResponseBody
+	@RequestMapping(value = "/updatevideo.do",method= RequestMethod.GET)
+	public Object insertvideo(String video,String fscard,String stud) {
+    	String fname = null;
+    	String partybranch = null;
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> partylist =  partyService.selectparty(map);
+    	for(int i = 0;i < partylist.size();i++){
+    		partybranch = partylist.get(i).get("partybranch").toString();
+    		fname = partylist.get(i).get("fname").toString();
+    	}
+    	map.put("video", video);
+    	map.put("fscard", fscard);
+    	map.put("psdparty", partybranch);
+    	map.put("stud", stud);
+    	map.put("fname", fname);
+    	map.put("psdate", new Date());
+    	int type = partyService.updatevideo(map);
+    	
+    	
+    	return type;
+    }
+    
+    
+    /**上传思想汇报
+     * */
+    @ResponseBody
+	@RequestMapping(value = "/updatesxhb.do",method= RequestMethod.POST)
+/*    @ApiImplicitParams({
+        @ApiImplicitParam(paramType="query", name = "report", value = "report", required = true, dataType = "String"),
+        @ApiImplicitParam(paramType="query", name = "id_card", value = "id_card", required = true, dataType = "String")
+    })*/
+	public Object updatesxhb(@RequestBody String putInStorage,MultipartFile file,String report,String id_card,HttpServletRequest request) {
+    	Integer type = 0;
+    	String id = null;
+    	String sxhb = null;
+    	String fileName = null;
+    	String ret_fileName = null;// 返回给前端已修改的图片名称   
+    	
+    	JSONObject json = JSONObject.fromObject(putInStorage);
+    	report = json.get("report").toString(); 
+    	id_card = json.get("id_card").toString(); 
+    	fileName = json.get("fileName").toString(); 
+    	
+    	System.out.println(report);
+    	System.out.println(id_card);
+    	System.out.println(fileName);
+ 
+    	
+//保存图片上服务器  base64解码
+
+    	String path = "C://apache-tomcat-7.0.47/webapps/upload/";
+		System.out.println("path="+path);
+	        File targetFile = new File(path);  
+	      
+	        if(!targetFile.exists()){  
+	        
+	        	targetFile.mkdirs();    
+				
+	        }  
+
+	           // 用于设置图片过大，存入临时文件    
+	           DiskFileItemFactory factory = new DiskFileItemFactory();    
+	           factory.setSizeThreshold(20 * 1024 * 1024); // 设定使用内存超过5M时，将产生临时文件并存储于临时目录中。    
+	           factory.setRepository(new File(path)); // 设定存储临时文件的目录。    
+	   
+	           ServletFileUpload upload = new ServletFileUpload(factory);    
+	           upload.setHeaderEncoding("UTF-8");   
+	           report = report.replaceAll("data:image/jpeg;base64,", "");      
+	               BASE64Decoder decoder = new BASE64Decoder();      
+	               try {      
+	                   // Base64解码      
+	                   byte[] b = decoder.decodeBuffer(report);      
+	                   for (int i = 0; i < b.length; ++i) {      
+	                       if (b[i] < 0) {// 调整异常数据      
+	                           b[i] += 256;      
+	                       }      
+	                   }      
+	                   // 生成jpeg图片      
+	                   //ret_fileName = new String(fileName).getBytes("gb2312" ) ;     
+	                   ret_fileName = new String(fileName.getBytes("gb2312"), "ISO8859-1" ) ;     
+	                   File file1 = new File(path + "/" + ret_fileName);    
+	                   OutputStream out = new FileOutputStream(file1);      
+	                   out.write(b);      
+	                   out.flush();      
+	                   out.close();      
+	               } catch (Exception e) {      
+	                   e.printStackTrace();      
+	               }      
+  
+
+    	map.put("fscard", id_card);
+    	List<Map<String,Object>> partylist =  partyService.selectparty(map);
+    	
+    	map.put("fscard", id_card);
+    	List<Map<String,Object>> partylist1 =  partyService.selectapply(map);
+    	
+    	if(partylist.size() != 0){
+    		
+    		for(int i = 0;i < partylist.size();i++){
+        		id = partylist.get(i).get("id").toString();
+        	}
+    		map.put("sxid", id);
+        	map.put("sxdate", new Date());
+        	map.put("sxhb", fileName);
+        	type =partyService.insertsxhb(map);
+    		
+    	}else if(partylist1.size() != 0){
+    		for(int i = 0;i < partylist1.size();i++){
+        		id = partylist1.get(i).get("id").toString();
+        	}
+    		
+    		map.put("sxid", id);
+        	map.put("sxdate", new Date());
+        	map.put("sxhb", fileName);
+        	type =partyService.insertsxhb(map);
+    	}
+    	System.out.println(id);
+    	
+    	
+    	return type;
+    }
+    
+    
+
+    
+    
+    /**判断是否党员*/
+    @ResponseBody
+	@RequestMapping(value = "/dy.do",method= RequestMethod.GET)
+    @ApiImplicitParam(paramType="query", name = "fscard", value = "fscard", required = true, dataType = "String")
+	public Object dy(String fscard) {
+    	String partybranch = null;
+    	String partybranch1 = null;
+    	Date partydate = null;
+    	String fname = null;
+    	String feedback = null;
+    	String fstatus = null;
+    	List list = new ArrayList();
+    	List list1 = new ArrayList();
+    	Integer type = null;
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> partylist =  partyService.selectparty(map);   //党员信息
+    	System.out.println(partylist+"-----");
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> applylist =  partyService.selectapply(map);    //非党员信息
+    	if(partylist.size() != 0){
+    		System.out.println("是党员------------");
+    		for(int i = 0;i < partylist.size();i++ ){
+    			partybranch = partylist.get(i).get("partybranch").toString();
+    			fname = partylist.get(i).get("fname").toString();
+    			partydate = (Date) partylist.get(i).get("partydate");
+    			partybranch1 = sf.format(partydate);
+    			
+    			partylist.get(i).put("partydate", partybranch1);
+    			
+    		}
+    		
+    		list = partylist;
+    		type = 0;
+    	}else  if(applylist.size() != 0){
+    		System.out.println("非党员--------------");
+    		for(int i = 0;i < applylist.size();i++ ){
+    			try{
+    			 feedback = applylist.get(i).get("feedback").toString();
+    			}catch(Exception e){
+    				feedback = "";
+    			}
+    			String zt = applylist.get(i).get("fstatus").toString();
+    			if(zt.equals("0")){
+    				zt = "入党申请者";
+    			}else if(zt.equals("1")){
+    				zt = "入党积极分子";
+    			}else if(zt.equals("2")){
+    				zt = "预备党员";
+    			}else if(zt.equals("3")){
+    				zt = "党员";
+    			}
+    			applylist.get(i).put("feedback", feedback);
+    			applylist.get(i).put("dangyuanzt", zt);
+    		}
+    		list = applylist;
+    		type = 1;
+    	}else{
+    		System.out.println("没有该身份证--------------");
+    		list = new ArrayList();
+    		type = 2;
+    	}
+    	
+    	
+    	list1.add(type);
+    	list1.add(list);
+    	return list1;
+    }
+    
+    
+    
+    /**显示学历*/
+    @ResponseBody
+	@RequestMapping(value = "/xl.do",method= RequestMethod.GET)
+   // @ApiImplicitParam(paramType="query", name = "fscard", value = "fscard", required = true, dataType = "String")
+	
+	public Object xl() {
+    	//response.setHeader("Access-Control-Allow-Origin", "*");
+    	List<Map<String,Object>> xllist =  partyService.selectxl();
+    	
+    	return xllist;
+    }
+    
+    /**显示党支部*/
+    @ResponseBody
+	@RequestMapping(value = "/selectpartybranch.do",method= RequestMethod.GET)
+	public Object selectpartybranch() {
+    	//response.setHeader("Access-Control-Allow-Origin", "*");
+    	List<Map<String,Object>> xllist =  partyService.selectpartybranch();
+    	
+    	return xllist;
+    }
+    
+    
+    
+    
+    /**查看该党员反馈*/
+    @ResponseBody
+	@RequestMapping(value = "/fk.do",method= RequestMethod.GET)
+    @ApiImplicitParam(paramType="query", name = "fscard", value = "fscard", required = true, dataType = "String")
+	public Object fk(String fscard) {
+    	List list = new ArrayList();
+    	String feedback = "";
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> partylist =  partyService.selectparty(map);   //党员信息
+    	System.out.println(partylist+"-----");
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> applylist =  partyService.selectapply(map);    //非党员信息
+    	if(partylist.size() != 0){
+    		System.out.println("是党员------------"); 		
+    		feedback = "";
+    	}else  if(applylist.size() != 0){
+    		System.out.println("非党员--------------");
+    		for(int i = 0;i < applylist.size();i++ ){
+    			try{
+    			 feedback = applylist.get(i).get("feedback").toString();
+    			}catch(Exception e){
+    				feedback = "";
+    			}
+    		}
+    	
+    	}else{
+    		feedback = "";
+    	}
+    	
+    	return feedback;
+    }
+    
+    
+    
+    /**查看该党员申请填写信息*/
+    @ResponseBody
+	@RequestMapping(value = "/information.do",method= RequestMethod.GET)
+    @ApiImplicitParam(paramType="query", name = "fscard", value = "fscard", required = true, dataType = "String")
+    public Object information(String fscard) {
+    	List list = new ArrayList();
+    	Integer type = 0;
+    	String zt = "";
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> partylist =  partyService.selectparty(map);   //党员信息
+    	map.put("fscard", fscard);
+    	List<Map<String,Object>> applylist =  partyService.selectapply(map);   //非党员资料
+    	if(applylist.size() != 0){
+    	for(int i = 0;i < applylist.size();i++ ){
+			 zt = applylist.get(i).get("fstatus").toString();
+			String check = applylist.get(i).get("fcheck").toString();
+			if(zt.equals("0")){
+				zt = "入党申请者";
+			}else if(zt.equals("1")){
+				zt = "入党积极分子";
+			}else if(zt.equals("2")){
+				zt = "预备党员";
+			}else if(zt.equals("3")){
+				zt = "党员";
+			}
+			
+			if(check.equals("0")){
+				check = "未审";
+			}else if(check.equals("1")){
+				check = "审核";
+			}
+			applylist.get(i).put("dangyuanzt", zt);
+			applylist.get(i).put("check", check);
+
+    	}
+    	list = applylist;
+    	}
+    	if(applylist.size() == 0){
+    		list = partylist;
+    	}
+    	return list;
+    }
+    
+    
+    /**base64解密*/
+    public static String decryptBASE64(String key){
+    	byte[] bt;
+    	try {
+    	bt = (new BASE64Decoder()).decodeBuffer(key);
+    	return new String(bt, "GB2312");
+    	} catch (IOException e) {
+    	e.printStackTrace();
+    	return "";
+    	}
+    }
+	
+	
+}

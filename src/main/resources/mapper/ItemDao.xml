@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.ItemDao">
+	<select id="itemSearch" parameterType="java.util.Map" resultType="org.spring.springboot.domain.Item">
+		select t.fname,cast(t.fsaleprice as decimal(18,2))
+        as FSalePrice,t.image,isnull(cast(k.fqty as int),0)  from t_ICItem t  left  join  icinventory k on t.fitemid=k.fitemid  where t.FHelpCode=#{partno};
+	</select>
+
+	<select id="discount" parameterType="java.util.Map" resultType="java.lang.String">
+		select discount from t_s_count where ftype=#{ftype}
+	</select>
+
+	<insert id="history" parameterType="java.util.Map">
+		insert into t_s_history (id,fusername,openid,ftime,fname,fhelpcode,fmobile,fcompanyname,fstatus)
+		VALUES
+		(#{id},#{fusername},#{openid},#{ftime},#{fname},#{fhelpcode},#{fmobile},#{fcompanyname},'0')
+	</insert>
+
+	<select id="query" parameterType="java.util.Map" resultType="org.spring.springboot.domain.Wxuser">
+		select fusername,fmobile,fcompanyname from t_s_wxuser where openid=#{openid}
+	</select>
+
+	<update id="submit" parameterType="java.util.Map">
+		update t_s_history set fnumber=#{fnumber},fstatus='1',fdiscount=#{fdiscount},ftotal=#{ftotal} where id=#{id}
+	</update>
+</mapper>

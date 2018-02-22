@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.UserDao">
+	<insert id="insertLog" parameterType="java.util.Map">
+	<selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+		select newid()
+	</selectKey>
+		insert into wLogistics(id,version,senderCode,tradeName,transCode,sendTime)
+		values
+		(#{id},#{version},#{senderCode},#{tradeName},#{transCode},#{sendTime})
+	</insert>	
+	
+	<insert id="insertLogentry" parameterType="java.util.Map">
+	insert into wLogistics_entry(id,logisticCode,villNo,rspCode,rspMsg,log_id)
+	values
+	<foreach collection="logentrylist" item="item" index="index" open="" close=";" separator=",">
+		(#{item.id},#{item.logisticCode},#{item.villNo},#{item.rspCode},#{item.rspMsg},#{item.log_id})
+	</foreach>
+    </insert>
+
+	<insert id="insertDel" parameterType="java.util.Map">
+		<selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+			select newid()
+		</selectKey>
+		insert into wDelivery(id,version,senderCode,tradeName,transCode,sendTime)
+		values
+		(#{id},#{version},#{senderCode},#{tradeName},#{transCode},#{sendTime})
+	</insert>
+
+	<insert id="insertDelentry" parameterType="java.util.Map">
+		insert into wDelivery_entry(id,deliveryCode,billNo,rspCode,rspMsg,del_id)
+		values
+		<foreach collection="delentrylist" item="item" index="index" open="" close=";" separator=",">
+			(#{item.id},#{item.deliveryCode},#{item.billNo},#{item.rspCode},#{item.rspMsg},#{item.del_id})
+		</foreach>
+	</insert>
+
+	<insert id="insertEn" parameterType="java.util.Map">
+		<selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+			select newid()
+		</selectKey>
+		insert into wEntry(id,version,transCode,sendTime,serverType)
+		values
+		(#{id},#{version},#{transCode},#{sendTime},#{serverType})
+	</insert>
+
+	<insert id="insertEntry" parameterType="java.util.Map">
+		insert into wEntry_entry(id,rspCode,rspMsg,billNo,assBillNo,entryID,entryCode,custCode,entry_id)
+		values
+		<foreach collection="entrylist" item="item" index="index" open="" close=";" separator=",">
+			(#{item.id},#{item.rspCode},#{item.rspMsg},#{item.billNo},#{item.assBillNo},#{item.entryID},#{item.entryCode},#{item.custCode},#{item.en_id})
+		</foreach>
+	</insert>
+
+	<insert id="checkResult" parameterType="java.util.Map">
+		insert into checkResult(id,version,commitTime,serialNumber,aprrMan,orgCode,apprType,tradeCode,brandId,cargoCrossId,brandCode,codeId,apprRtn,apprAdvice,apprTime,sp1,sp2,sp3)
+		values
+		(#{id},#{version},#{commitTime},#{serialNumber},#{aprrMan},#{orgCode},#{apprType},#{tradeCode},#{brandId},#{cargoCrossId},#{brandCode},#{codeId},#{apprRtn},#{apprAdvice},#{apprTime},#{sp1},#{sp2},#{sp3})
+	</insert>
+
+	<insert id="response" parameterType="java.util.Map">
+		insert into response(id,declaraType,coCode,tradeCode,brandId,brandCode,codeId,cargoCrossId,recvTime,rtnCode,rtnDesc,spt1,spt2,spt3,ftype)
+		values
+		(#{id},#{declaraType},#{coCode},#{tradeCode},#{brandId},#{brandCode},#{codeId},#{cargoCrossId},#{recvTime},#{rtnCode},#{rtnDesc},#{spt1},#{spt2},#{spt3},0)
+	</insert>
+
+	<insert id="declare" parameterType="java.util.Map">
+		insert into response(id,declaraType,coCode,tradeCode,brandId,brandCode,codeId,cargoCrossId,recvTime,rtnCode,rtnDesc,spt1,spt2,spt3,ftype)
+		values
+		(#{id},#{declaraType},#{coCode},#{tradeCode},#{brandId},#{brandCode},#{codeId},#{cargoCrossId},#{recvTime},#{rtnCode},#{rtnDesc},#{sp1},#{sp2},#{sp3},1)
+	</insert>
+
+	<insert id="check" parameterType="java.util.Map">
+		insert into check1(id,aprrMan,orgCode,apprType,tradeCode,brandId,brandCode,codeId,cargoCrossId,rtnCode,rtnDesc,apprRtn,apprAdvice,apprTime,spt1,spt2,spt3)
+		values
+		(#{id},#{aprrMan},#{orgCode},#{apprType},#{tradeCode},#{brandId},#{brandCode},#{codeId},#{cargoCrossId},#{rtnCode},#{rtnDesc},#{apprRtn},#{apprAdvice},#{apprTime},#{spt1},#{spt2},#{spt3})
+	</insert>
+</mapper>

@@ -1,0 +1,27 @@
+package org.spring.springboot.service;
+
+import java.util.List;
+import java.util.Map;
+
+
+
+public interface PartyService {
+
+	public int updateparty(Map<String,Object> map); 
+	public int updateparty1(Map<String,Object> map); 
+	public int updatevideo(Map<String,Object> map); 
+	public int lddyzzz(Map<String,Object> map); 
+	public List<Map<String,Object>> selectapplyid(); 
+	public int updatesubreports1(Map<String,Object> map); 
+	public int insertapply(Map<String,Object> map); 
+	public int insertsxhb(Map<String,Object> map); 
+	public List<Map<String,Object>> selectparty(Map<String,Object> map); 
+	public List<Map<String,Object>> selectvideo(); 
+	public List<Map<String,Object>> selectxl(); 
+	public List<Map<String,Object>> selectdt(); 
+	public List<Map<String,Object>> selectimage(); 
+	public List<Map<String,Object>> selectpartybranch(); 
+	public List<Map<String,Object>> selectapply(Map<String,Object> map); 
+	public List<Map<String,Object>> selectvideo1(Map<String,Object> map); 
+	public List<Map<String,Object>> selectpartyid(); 
+}

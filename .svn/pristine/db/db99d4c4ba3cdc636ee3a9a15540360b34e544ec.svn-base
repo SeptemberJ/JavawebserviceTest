@@ -1,0 +1,53 @@
+package org.spring.springboot.service.impl;
+import java.util.List;
+import java.util.Map;
+
+import org.spring.springboot.dao.PartyDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+
+@Service
+public class PartyService {
+	@Autowired
+	private PartyDao partyDao;
+	
+	public int updateparty(Map<String,Object> map){
+		return partyDao.updateparty(map);
+	}
+	public int updateparty1(Map<String,Object> map){
+		return partyDao.updateparty1(map);
+	}
+	public List<Map<String,Object>> selectparty(Map<String,Object> map){
+		return partyDao.selectparty(map);
+	}
+	public int insertapply(Map<String,Object> map){
+		return partyDao.insertapply(map);
+	}
+	public int updatevideo(Map<String,Object> map){
+		return partyDao.updatevideo(map);
+	}
+	public int updatesubreports1(Map<String,Object> map){
+		return partyDao.updatesubreports1(map);
+	}
+	public List<Map<String,Object>> selectvideo(){
+		return partyDao.selectvideo();
+	}
+	public int insertsxhb(Map<String,Object> map){
+		return partyDao.insertsxhb(map);
+	}
+	public List<Map<String,Object>> selectxl(){
+		return partyDao.selectxl();
+	}
+	public List<Map<String,Object>> selectapply(Map<String,Object> map){
+		return partyDao.selectapply(map);
+	}
+	public List<Map<String,Object>> selectpartybranch(){
+		return partyDao.selectpartybranch();
+	}
+	public List<Map<String,Object>> selectvideo1(Map<String,Object> map){
+		return partyDao.selectvideo1(map);
+	}
+	
+}

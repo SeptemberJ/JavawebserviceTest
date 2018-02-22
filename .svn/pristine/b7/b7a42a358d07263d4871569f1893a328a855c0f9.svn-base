@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.PartyDao">
+
+	 <update id="updateparty" parameterType="java.util.Map">
+    update z_party set
+   fname=#{fname},
+   unit = #{unit},
+   changeparty = #{changeparty},
+   zcwhy = #{zcwhy}
+    where fscard=#{fscard}
+    </update>
+    
+      <select id="selectparty" resultType="java.util.Map">
+  		select * from z_party where fscard=#{fscard}
+   </select>
+   
+       <select id="selectdt" resultType="java.util.Map">
+  		select * from z_sjd
+   </select>
+ 
+   
+         <select id="selectvideo" resultType="java.util.Map">
+  		select * from z_shyt 
+   </select>
+       <select id="selectvideo1" resultType="java.util.Map">
+  		select * from z_shyt  where id = #{id}
+   </select>
+   
+            <select id="selectxl" resultType="java.util.Map">
+  		select * from z_xl
+   </select>
+   
+             <select id="selectapply" resultType="java.util.Map">
+  		select * from z_partyapply  where fscard = #{fscard}
+   </select>
+   
+                <select id="selectpartybranch" resultType="java.util.Map">
+  		select * from  z_party_branch  
+   </select>
+   
+  
+   
+   
+	 <update id="updateparty1" parameterType="java.util.Map">
+    update z_party set
+   yparty=#{yparty},
+   partybranch = #{partybranch}
+    where fscard=#{fscard}
+    </update>
+    
+    
+    
+    	 <update id="updatesubreports1" parameterType="java.util.Map">
+    update z_partyapply set
+   subreports1=#{subreports1}
+    where fscard=#{fscard}
+    </update>
+    
+      <insert id="insertapply" parameterType="java.util.Map">
+	insert z_partyapply(rdjsr,bydate,cjgzdate,rxdate,fjg,fxx,fname,unit,fcheck,fstatus,fsex,fmz,fscard,zw,xl,faddress,partybranch) 
+	values
+	(
+	 #{rdjsr},#{bydate},#{cjgzdate},#{rxdate},#{fjg},#{fxx},#{fname},#{unit},#{fcheck},#{fstatus},#{fsex},#{fmz},#{fscard},#{zw},#{xl},#{faddress},#{partybranch}
+	) 
+    </insert>
+    
+        <insert id="insertsxhb" parameterType="java.util.Map">
+	insert z_sxhb(sxdate,sxid,sxhb) 
+	values
+	(
+	 #{sxdate},#{sxid},#{sxhb}
+	) 
+    </insert>
+</mapper>

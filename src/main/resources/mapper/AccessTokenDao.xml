@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.springboot.dao.AccessTokenDao">
+    
+    
+    <update id="update" parameterType="java.util.Map">
+    update wsc_access_token set access_token=#{access_token} , add_time=#{add_time}, jsapi_ticket=#{jsapi_ticket} where id=1
+    </update>
+    
+    <select id="listById" resultType="org.spring.springboot.domain.AccessToken">
+    select * from wsc_access_token where id=1
+    </select>
+    
+</mapper>
